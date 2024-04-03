@@ -24,7 +24,7 @@ namespace sql_lite_example{
             SQLiteCommand cmd = new SQLiteCommand(con);
 
             // Remove the table if it exists
-            cmd.CommandText = "DROP TABLE IF EXISTS books";
+            cmd.CommandText = "DROP TABLE IF EXISTS cars";
             cmd.ExecuteNonQuery();
 
             // Creates the cars table
@@ -39,24 +39,23 @@ namespace sql_lite_example{
             con.Close();
         }
 
-        public void AddCar(Car car){
+        public void AddCar(string model, int year){
             con.Open();
             SQLiteCommand cmd = new SQLiteCommand(con);
             cmd.CommandText = "INSERT INTO cars (model, year) VALUES (@model, @year)";
-            cmd.Parameters.AddWithValue("@model", car.GetModel());
-            cmd.Parameters.AddWithValue("@year", car.GetYear());
+            cmd.Parameters.AddWithValue("@model", model);
+            cmd.Parameters.AddWithValue("@year", year);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
             con.Close();
         }
 
-        public Car[] ReadCars(){
+        public int ReadCars(Car[] cars){
             con.Open();
             SQLiteCommand cmd = new SQLiteCommand(con);
             cmd.CommandText = "SELECT * FROM cars";
 
             int count = 0;
-            Car[] cars = new Car[100];
 
             using(SQLiteDataReader rdr = cmd.ExecuteReader()){
                 while(rdr.Read()){
@@ -66,7 +65,7 @@ namespace sql_lite_example{
             }
             con.Close();
 
-            return cars;
+            return count;
         }
 
         public void UpdateCar(Car car){
